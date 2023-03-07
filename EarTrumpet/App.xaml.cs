@@ -237,7 +237,7 @@ namespace EarTrumpet
                 null,
                 new SettingsPageViewModel[]
                     {
-                        new FilterDevicesViewModel(_settings),
+                        new FilterDevicesViewModel(CollectionViewModel, _settings),
                     });
             allCategories.Add(filterCategory);
 
