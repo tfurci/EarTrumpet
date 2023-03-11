@@ -26,6 +26,7 @@ namespace EarTrumpet
         public static Version PackageVersion { get; private set; }
         public static TimeSpan Duration => s_appTimer.Elapsed;
 
+        public FilterManager FilterManager { get; private set; }
         public FlyoutWindow FlyoutWindow { get; private set; }
         public DeviceCollectionViewModel CollectionViewModel { get; private set; }
 
@@ -75,7 +76,8 @@ namespace EarTrumpet
 
             var deviceManager = WindowsAudioFactory.Create(AudioDeviceKind.Playback);
             deviceManager.Loaded += (_, __) => CompleteStartup();
-            CollectionViewModel = new DeviceCollectionViewModel(deviceManager, _settings);
+            FilterManager = new FilterManager(deviceManager, _settings);
+            CollectionViewModel = new DeviceCollectionViewModel(deviceManager, FilterManager, _settings);
 
             _trayIcon = new ShellNotifyIcon(new TaskbarIconSource(CollectionViewModel, _settings));
             Exit += (_, __) => _trayIcon.IsVisible = false;
@@ -90,6 +92,8 @@ namespace EarTrumpet
 
         private void CompleteStartup()
         {
+            this.FilterManager.Load();
+
             AddonManager.Load(shouldLoadInternalAddons: HasDevIdentity);
             Exit += (_, __) => AddonManager.Shutdown();
 #if DEBUG
@@ -237,7 +241,7 @@ namespace EarTrumpet
                 null,
                 new SettingsPageViewModel[]
                     {
-                        new FilterDevicesViewModel(CollectionViewModel, _settings),
+                        new FilterDevicesViewModel(FilterManager),
                     });
             allCategories.Add(filterCategory);
 
