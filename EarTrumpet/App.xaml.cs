@@ -82,8 +82,8 @@ namespace EarTrumpet
 
             var deviceManager = WindowsAudioFactory.Create(AudioDeviceKind.Playback);
             deviceManager.Loaded += (_, __) => CompleteStartup();
-            FilterManager = new FilterManager(deviceManager, _settings);
-            CollectionViewModel = new DeviceCollectionViewModel(deviceManager, FilterManager, _settings);
+            FilterManager = new FilterManager(deviceManager, Settings);
+            CollectionViewModel = new DeviceCollectionViewModel(deviceManager, FilterManager, Settings);
 
             _trayIcon = new ShellNotifyIcon(new TaskbarIconSource(CollectionViewModel, Settings));
             Exit += (_, __) => _trayIcon.IsVisible = false;
